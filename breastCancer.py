@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -34,7 +35,8 @@ class BreastCancer:
         self.get_binary_tree()
 
     def load_Dataset(self, path):
-        self.df_breastCancer = pd.read_csv(path+'\\brestcancer.csv',delimiter=";",encoding = "ISO-8859-1")
+        fn = os.path.join(os.path.dirname(__file__), 'brestcancer.csv')
+        self.df_breastCancer = pd.read_csv(fn,delimiter=";",encoding = "ISO-8859-1")
         self.df_breastCancer = self.df_breastCancer.drop_duplicates()
         self.df_breastCancer = self.df_breastCancer.drop(columns=['id', 'radius_se', 'texture_se', 'perimeter_se', 'area_se', 'smoothness_se', 'compactness_se', 'concavity_se', 'concave points_se', 'symmetry_se', 'fractal_dimension_se', 'radius_worst', 'texture_worst', 'perimeter_worst', 'area_worst', 'smoothness_worst', 'compactness_worst', 'concavity_worst', 'concave points_worst', 'symmetry_worst', 'fractal_dimension_worst'])
 
@@ -70,11 +72,16 @@ class BreastCancer:
         dfTrain = pd.DataFrame([self.y_train.value_counts(normalize=True)])
         dfTest = pd.DataFrame([self.y_test.value_counts(normalize=True)])
         html = dfTrain.to_html(classes="table")
-        text_file = open(self.path + '\\templates\\ratio_Train.html', 'w')
+        path_Test = os.path.join(os.path.join(os.path.dirname(__file__), 'templates'), 'ratio_Test.html')
+        path_Train = os.path.join(os.path.join(os.path.dirname(__file__), 'templates'), 'ratio_Train.html')
+        
+        
+        
+        text_file = open(path_Train, 'w')
         text_file.write(html)
         text_file.close()
         html = dfTest.to_html(classes="table")
-        text_file = open(self.path + '\\templates\\ratio_Test.html', 'w')
+        text_file = open(path_Test, 'w')
         text_file.write(html)
         text_file.close()
         print('Train B/M distribution\n', self.y_train.value_counts(normalize=True))
@@ -195,19 +202,19 @@ class BreastCancer:
         return listvalues
     
     def create_model_files(self):
-        pickle.dump(self.lrm, open(self.path + '\\models\\lrm_model.pkl','wb'))
-        pickle.dump(self.dtm, open(self.path + '\\models\\dtm_model.pkl','wb'))
-        pickle.dump(self.nbm, open(self.path + '\\models\\nbm_model.pkl','wb'))
-        pickle.dump(self.knn, open(self.path + '\\models\\knn_model.pkl','wb'))
-        pickle.dump(self.svm, open(self.path + '\\models\\svm_model.pkl','wb'))
-
+        pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'lrm_model.pkl'),'wb'))
+        pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'dtm_model.pkl'),'wb'))
+        pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'nbm_model.pkl'),'wb'))
+        pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'knn_model.pkl'),'wb'))
+        pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'svm_model.pkl'),'wb'))
+        
     def generate_plots(self):
         goal = self.df_breastCancer.diagnosis
         counts = goal.value_counts()
         percent100 = goal.value_counts(normalize=True).mul(100).round(1).astype(str) + '%'
         dftest = pd.DataFrame({'Nr Diagnosis': counts,'Percent': percent100})
         self.df_breastCancer['diagnosis'].value_counts().sort_index().plot.bar()
-        plt.savefig(self.path + '\\static\\ratio_diagnosis.png')
+        plt.savefig(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'ratio_diagnosis.png'))
         data_num = self.df_breastCancer.drop(columns=["diagnosis"])
 
         fig, axes = plt.subplots(len(data_num.columns)//3, 3, figsize=(50, 50))
@@ -216,18 +223,19 @@ class BreastCancer:
             for axis in triaxis:
                 data_num.hist(column = data_num.columns[i], ax=axis, bins=50)
                 i = i+1
-
-        plt.savefig(self.path + '\\static\\histogramas.png')
+        
+        plt.savefig(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'histogramas.png'))
         
         html = dftest.to_html(classes="table")
-        text_file = open(self.path + '\\templates\\ratio_diagnosis.html', 'w')
+        os.path.join(os.path.join(os.path.dirname(__file__), 'templates'), 'ratio_diagnosis.html')
+        text_file = open(os.path.join(os.path.join(os.path.dirname(__file__), 'templates'), 'ratio_diagnosis.html'), 'w')
         text_file.write(html)
         text_file.close()
     
     def get_binary_tree(self):
         plt.figure(figsize=(40,20))
         tree.plot_tree(self.dtm,feature_names = self.X.columns, class_names=['B','M'],filled=True)
-        plt.savefig(self.path + '\\static\\BinaryTree.png')
+        plt.savefig(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'BinaryTree.png'))
         n_nodes = self.dtm.tree_.node_count
         children_left = self.dtm.tree_.children_left
         children_right = self.dtm.tree_.children_right

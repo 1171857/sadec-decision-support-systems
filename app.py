@@ -1,6 +1,5 @@
 import numpy as np
-from flask import Flask, request, render_template, jsonify
-import flask_sijax 
+from flask import Flask, request, render_template 
 import os
 from breastCancer import BreastCancer 
 

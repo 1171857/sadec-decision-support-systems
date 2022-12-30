@@ -193,14 +193,18 @@ class BreastCancer:
             listvalues[i] = (listvalues[i] - self.min[i])/(self.max[i]-self.min[i])
             i+=1
         return listvalues
-
-    def desnormalize_Values(self, listvalues):
-        i=0
-        for column in self.df.columns:
-            listvalues[i] = listvalues[i] * (self.max[i]-self.min[i]) + self.min[i]
-            i+=1
-        return listvalues
     
+    def desnormalize_Value(self, value, position):
+        return value * (self.max[position]-self.min[position]) + self.min[position]
+    
+    def desnormalize_List(self, list_values):
+        i=0
+        for values in list_values:
+            list_values[i] = list_values[i] * (self.max[i]-self.min[i]) + self.min[i]
+
+        return list_values
+    
+
     def create_model_files(self):
         pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'lrm_model.pkl'),'wb'))
         pickle.dump(self.lrm, open(os.path.join(os.path.join(os.path.dirname(__file__), 'models'), 'dtm_model.pkl'),'wb'))
@@ -288,38 +292,38 @@ class BreastCancer:
                             node=i,
                             left=children_left[i],
                             feature=self.dtm.feature_names_in_[feature[i]],
-                            threshold=round(threshold[i],3),
+                            threshold=round(self.desnormalize_Value(threshold[i],i),3),
                             right=children_right[i],
                         )
-                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(threshold[i],3)))
+                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(self.desnormalize_Value(threshold[i],i),3)))
                 elif is_leaves[children_left[i]]:
                     self.logic = self.logic + "if node == {node}:\n\tif response == 'Yes':\n\t\tnode={left}\n\t\tis_leaf = True\n\t\tsys.exit()\n\telse:\n\t\tnode={right}\n\t\tsys.exit()\n".format(
                             node=i,
                             left=children_left[i],
                             feature=self.dtm.feature_names_in_[feature[i]],
-                            threshold=round(threshold[i],3),
+                            threshold=round(self.desnormalize_Value(threshold[i],i),3),
                             right=children_right[i],
                         )
-                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(threshold[i],3)))
+                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(self.desnormalize_Value(threshold[i],i),3)))
                 
                 elif is_leaves[children_right[i]]:
                     self.logic = self.logic + "if node == {node}:\n\tif response == 'Yes':\n\t\tnode={left}\n\t\tsys.exit()\n\telse:\n\t\tnode={right}\n\t\tis_leaf = True\n\t\tsys.exit()\n".format(
                             node=i,
                             left=children_left[i],
                             feature=self.dtm.feature_names_in_[feature[i]],
-                            threshold=round(threshold[i],3),
+                            threshold=round(self.desnormalize_Value(threshold[i],i),3),
                             right=children_right[i],
                         )
-                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(threshold[i],3)))
+                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(self.desnormalize_Value(threshold[i],i),3)))
                 else:
                     self.logic = self.logic + "if node == {node}:\n\tif response == 'Yes':\n\t\tnode={left}\n\t\tsys.exit()\n\telse:\n\t\tnode={right}\n\t\tsys.exit()\n".format(
                             node=i,
                             left=children_left[i],
                             feature=self.dtm.feature_names_in_[feature[i]],
-                            threshold=round(threshold[i],3),
+                            threshold=round(self.desnormalize_Value(threshold[i],i),3),
                             right=children_right[i],
                         )
-                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(threshold[i],3)))
+                    self.questions.append(self.dtm.feature_names_in_[feature[i]] + ' <= ' + "{threshold}".format(threshold=round(self.desnormalize_Value(threshold[i],i),3)))
         print(self.logic)
     
     def get_logic(self):
@@ -336,3 +340,15 @@ class BreastCancer:
     
     def get_Result(self, pos):
         return 'Benign' if self.predict[pos] == 'B' else 'Malignant'
+
+    def get_Results_From_All_Models(self, list_values):
+        list_values_norm = self.normalize_Values(list_values)
+        result = []
+        result.append(self.lrm.predict([list_values_norm]))
+        result.append(self.dtm.predict([list_values_norm]))
+        result.append(self.nbm.predict([list_values_norm]))
+        result.append(self.knn.predict([list_values_norm]))
+        result.append(self.svm.predict([list_values_norm]))
+        return result
+        
+        

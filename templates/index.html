@@ -150,19 +150,22 @@ tr:nth-child(even) {
       <br><br>
       <input type="submit" name="response" value="Submit">
     </form>
-    <h3>Result: <b>{{ result }}</b></h3>
+    <h2 class="w3-xxxlarge w3-text-red"><b>{{ result_title }}</b></h2>
+    <h3 style="margin-bottom:75px"><b>{{ result }}</b></h3>
   </div>
 
   <div>
+    <h2 class="w3-xxxlarge w3-text-red"><b>Binary Tree Plot.</b></h2>
+    <h1>The following plot values ​​are normalized!</h1>
     <img src="{{ url_for('static', filename='BinaryTree.png') }}" alt="Binary Tree" class="center" style="height: 700px;width: 1400px;">
   </div> 
 
   <!-- Designers -->
   <div class="w3-container" id="TestMLAlgorithms" style="margin-top:75px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Test ML Algorithms.</b></h1>
-    <hr style="width:50px;border:5px solid red" class="w3-round">
-    <p>Do you want us to style your home? Fill out the form and fill me in with the details :) We love meeting new people!</p>
-    <form action="{{ url_for('predict')}}" method="post">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Test ML Algorithms.</b>
+    <hr style="width:50px;border:5px solid red" class="w3-round"></h1>
+    <p>Enter the values ​​below and click submit to get the prediction of the five ML algorithms</p>
+    <form action="{{ url_for('predict')}}#TestMLAlgorithms" method="post">
       <div class="w3-col m4 w3-margin-bottom">
         <label><h4><b>Radius</b></h4></label>
         <input class="w3-input w3-border" type="text" name="Radius" required style="width:75px">
@@ -206,7 +209,12 @@ tr:nth-child(even) {
       <button type="submit" class="w3-button w3-block w3-padding-large w3-red w3-margin-bottom">Submite values</button>
     </form>  
   </div>
-  <h4 style="color:violet"> {{ prediction_text}}  </h4>
+  <h2 class="w3-xxxlarge w3-text-red"><b>{{ Diagnosis_result}}</b></h2>
+  <h3><b> {{ lrm_result}} </b></h3>
+  <h3><b> {{ dtm_result}} </b></h3>
+  <h3><b> {{ nbm_result}} </b></h3>
+  <h3><b> {{ knn_result}} </b></h3>
+  <h3><b> {{ svm_result}} </b></h3>
   <!-- End page content -->
 </div>
 

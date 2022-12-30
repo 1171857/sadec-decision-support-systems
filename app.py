@@ -17,8 +17,23 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    list_values = []
+    list_values.append(float(request.form.get('Radius')))
+    list_values.append(float(request.form.get('Texture')))
+    list_values.append(float(request.form.get('Perimeter')))
+    list_values.append(float(request.form.get('Area')))
+    list_values.append(float(request.form.get('Smoothness')))
+    list_values.append(float(request.form.get('Compactness')))
+    list_values.append(float(request.form.get('Concavity')))
+    list_values.append(float(request.form.get('Concave Points')))
+    list_values.append(float(request.form.get('Symmetry')))
+    list_values.append(float(request.form.get('Fractal Dimension')))
 
-    return render_template('index.html', prediction_text=f'Diagnosis result {result}')
+    result = br.get_Results_From_All_Models(list_values)
+
+    return render_template('index.html', Diagnosis_result=f'Diagnosis result.',lrm_result=f'lrm: {result[0]}' , 
+                    dtm_result=f'dtm: {result[1]}', nbm_result=f'nbm: {result[2]}' ,knn_result=f'knn: {result[3]}',
+                    svm_result=f'svm: {result[4]}', question=br.get_Question(globals["node"]) )
 
 @app.route('/questions', methods=['POST'])
 def questions():
@@ -28,7 +43,7 @@ def questions():
     except SystemExit:
         pass
     if globals["is_leaf"]:
-        return render_template('index.html', result=br.get_Result(globals["node"]))
+        return render_template('index.html', result_title=f'Results.', result=br.get_Result(globals["node"]))
     return render_template('index.html', question=br.get_Question(globals["node"]))
 
 if __name__ == "__main__":

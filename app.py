@@ -5,7 +5,9 @@ from breastCancer import BreastCancer
 
 app = Flask(__name__, template_folder='templates')
 path = os.path.dirname(os.path.abspath(__file__))
-
+br = BreastCancer(path, 3, 0.3, 15)
+globals = {'node': 0, 'response': '', 'is_leaf': False}
+   
 @app.route('/')
 def home():
     globals["node"] = 0
@@ -30,6 +32,4 @@ def questions():
     return render_template('index.html', question=br.get_Question(globals["node"]))
 
 if __name__ == "__main__":
-    br = BreastCancer(path, 3, 0.3, 15)
-    globals = {'node': 0, 'response': '', 'is_leaf': False}
     app.run()

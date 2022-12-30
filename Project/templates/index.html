@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Diagnosis Helper</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>ISEP</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="/" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="#goals" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Goals</a> 
+    <a href="#documentation" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a> 
+    <a href="#BinaryTreeQuestions" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Binary Tree</a> 
+    <a href="#TestMLAlgorithms" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Test ML Algorithms</a> 
+  </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+  <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
+  <span></span>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Header -->
+  <div class="w3-container" style="margin-top:30px" id="goals">
+    <h1 class="w3-jumbo"><b>Breast Cancer Diagnosis Helper</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>Goals.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+  <div class="w3-container" id="goals">
+    <p>The objective of this work is to create a decision support tool for doctors.
+      We will create machine learning models to diagnose the patient. 
+      The objective is to create a binary tree that will ask questions about radius, texture, perimeter, area, smoothness, compactness, concavity, concave points, symmetry and fractal dimension
+      
+      We will use 5 machine learning algorithms, the LogisticRegression, DecisionTreeClassifier, GaussianNB, KNeighborsClassifier and Support Vectorial Classification.
+      This site will be divided into 3 parts, in the first we will have documented the process of creating the models and comparing the best models, the second part will be the binary tree in which the questions to the doctors will be asked, and finally the last part we can use the specific algorithm, insert the values ​​and it returns your prediction.
+    </p>
+    <div>
+      <img src="{{ url_for('static', filename='ConceptualArchitecture.jpg') }}" alt="ConceptualArchitecture" style="margin-left:15px">
+    </div>
+  </div>
+  <!-- Documentation -->
+  <div class="w3-container" id="documentation" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Documentation.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>Initially, we started by treating the dataset data, removing duplicates. Next, we remove the columns for the standard deviation and the worst value, as they do not provide relevant information for training the model.</p>
+    <div>
+      <h3><b>Ratio Diagnosis</b></h3>
+      {% include 'ratio_diagnosis.html' %}
+    </div>
+    <p>We checked the cancer diagnosis ratio, as we can see in the following image, most of the cases in the dataset are benign cancers, around 62.7% and the rest are malignant, 37.3%.</p>
+    <div>
+      <img src="{{ url_for('static', filename='ratio_diagnosis.png') }}" alt="Ratio Diagnosis" class="center" style="height: 500px;width: 600px;">
+    </div>
+    <p>We don't have any non <b>Na</b> values, and most dataset values ​​are unique. Since they are continuous variables, we will create a range and insert these values ​​within this new range, normalizing them between 0 and 50. In the following image, we can see several histograms that relate the number of elements per division created.</p>
+    <div>
+      <img src="{{ url_for('static', filename='histogramas.png') }}" alt="Ratio Diagnosis" class="center" style="height: 900px;width: 900px;">
+    </div>  
+      <p>Separeted the sample for trainning and testing to have the same ratio of benign and malign diagnosis</p>
+    <div>
+      <h3><b>Ratio Test Sample</b></h3>
+      {% include 'ratio_Test.html' %}
+    </div>
+    <div>
+      <h3><b>Ratio Train Sample</b></h3>
+      {% include 'ratio_Train.html' %}
+    </div>
+      <p>Finally we implement the various machine learning algorithms and we obtain the following results:</p>
+      <h3><b>Logistic Regression</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='lrm.PNG') }}" alt="Ratio Diagnosis" style="height: 150px;width: 350px;">
+      </div> 
+      <h3><b>Decision Tree Classifier</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='DecisionTreeClassifier.JPG') }}" alt="Ratio Diagnosis" style="height: 150px;width: 350px;">
+      </div> 
+      <h3><b>K Neighbors Classifier</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='Knn.JPG') }}" alt="Ratio Diagnosis" style="height: 150px;width: 350px;">
+      </div> 
+      <h3><b>Gaussian Naive Bayes</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='GaussianNB.JPG') }}" alt="Ratio Diagnosis" style="height: 150px;width: 350px;">
+      </div> 
+      <h3><b>Support Vector Classification</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='Svm.JPG') }}" alt="Ratio Diagnosis" style="height: 150px;width: 350px;">
+      </div> 
+      <h3><b>Cross Validation with the three best algorithms</b></h3>
+      <div>
+        <img src="{{ url_for('static', filename='CrossValidation.JPG') }}" alt="Ratio Diagnosis"  style="height: 500px;width: 750px;">
+      </div> 
+  </div>
+
+  <!-- Binary Tree -->
+  <div class="w3-container" id="BinaryTreeQuestions" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Binary Tree.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round"> 
+    <form action="{{ url_for('questions')}}#BinaryTreeQuestions" method="post">
+      <label for="cars"><h3>Question: </h3><b>{{ question }}</b></label>
+      <br><br>
+      <select name="response" id="response">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <br><br>
+      <input type="submit" name="response" value="Submit">
+    </form>
+    <h3>Result: <b>{{ result }}</b></h3>
+  </div>
+
+  <div>
+    <img src="{{ url_for('static', filename='BinaryTree.png') }}" alt="Binary Tree" class="center" style="height: 700px;width: 1400px;">
+  </div> 
+
+  <!-- Designers -->
+  <div class="w3-container" id="TestMLAlgorithms" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Test ML Algorithms.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>Do you want us to style your home? Fill out the form and fill me in with the details :) We love meeting new people!</p>
+    <form action="{{ url_for('predict')}}" method="post">
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Radius</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Radius" required style="width:75px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Texture</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Texture" required style="width:75px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Perimeter</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Perimeter" required style="width:100px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Area</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Area" required style="width:50px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Smoothness</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Smoothness" required style="width:125px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Compactness</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Compactness" required style="width:125px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Concavity</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Concavity" required style="width:150px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Concave Points</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Concave Points" required style="width:160px">
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Symmetry</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Symmetry" required style="width:110px"> 
+      </div>
+      <div class="w3-col m4 w3-margin-bottom">
+        <label><h4><b>Fractal Dimension</b></h4></label>
+        <input class="w3-input w3-border" type="text" name="Fractal Dimension" required style="width:190px">
+      </div>
+      <button type="submit" class="w3-button w3-block w3-padding-large w3-red w3-margin-bottom">Submite values</button>
+    </form>  
+  </div>
+  <h4 style="color:violet"> {{ prediction_text}}  </h4>
+  <!-- End page content -->
+</div>
+
+<div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"></div>
+
+<script>
+// Script to open and close sidebar      
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("myOverlay").style.display = "none";
+}
+
+// Modal Image Gallery
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  var captionText = document.getElementById("caption");
+  captionText.innerHTML = element.alt;
+}
+</script>
+
+</body>
+</html>
